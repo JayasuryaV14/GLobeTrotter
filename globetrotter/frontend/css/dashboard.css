@@ -1,13 +1,13 @@
-body {
-    font-family: Arial;
-    background:#f2f6ff;
-    padding:30px;
+.trip-grid {
+  margin-top: 30px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
 }
 
 .trip-card {
-    background:white;
-    width:250px;
-    padding:20px;
-    border-radius:10px;
-    box-shadow:0 5px 10px rgba(0,0,0,0.1);
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }

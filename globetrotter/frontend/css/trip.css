@@ -1,0 +1,19 @@
+.trip-form {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  max-width: 500px;
+  margin-top: 20px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.trip-form input, .trip-form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+
+.date-row {
+  display: flex;
+  gap: 10px;
+}

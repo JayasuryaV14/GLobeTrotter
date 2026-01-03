@@ -1,8 +1,23 @@
-<h2>My Trips</h2>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Trips | GlobeTrotter</title>
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
 
-<div class="trip-card">
-  <h3>My Europe Trip</h3>
-  <button onclick="openTrip()">Open</button>
+<div class="container">
+  <h1>My Trips</h1>
+
+  <div class="trip-grid">
+    <div class="trip-card">
+      <h3>Europe Adventure</h3>
+      <p>Paris → Rome → Berlin</p>
+      <p>7 Days</p>
+
+      <button onclick="openTrip()">Open Itinerary</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -10,3 +25,6 @@ function openTrip(){
   window.location.href = "itinerary-builder.html";
 }
 </script>
+
+</body>
+</html>

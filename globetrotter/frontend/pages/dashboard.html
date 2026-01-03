@@ -1,23 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>GlobeTrotter | Dashboard</title>
-    <link rel="stylesheet" href="../css/dashboard.css">
+  <title>Dashboard | GlobeTrotter</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
 </head>
 <body>
 
-    <h1>🌍 GlobeTrotter</h1>
-    <h3>Welcome, Explorer!</h3>
+<div class="container">
+  <h1>Welcome, Explorer 🌍</h1>
+  <p>Your upcoming journeys</p>
 
-    <button onclick="newTrip()">➕ Plan New Trip</button>
+  <button class="btn" onclick="createTrip()">➕ Plan New Trip</button>
 
-    <div class="trips">
-        <div class="trip-card">
-            <h4>My Europe Trip</h4>
-            <p>3 Cities | 7 Days</p>
-            <button onclick="openTrip()">View</button>
-        </div>
+  <div class="trip-grid">
+    <div class="trip-card">
+      <h3>Europe Adventure</h3>
+      <p>3 Cities · 7 Days</p>
+      <p>₹ 75,000</p>
+      <button onclick="openTrip()">View</button>
     </div>
+  </div>
+</div>
 
 <script src="../js/dashboard.js"></script>
 </body>

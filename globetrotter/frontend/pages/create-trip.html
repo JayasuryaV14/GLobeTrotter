@@ -1,10 +1,29 @@
-<h2>Create Trip</h2>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Create Trip | GlobeTrotter</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/trip.css">
+</head>
+<body>
 
-<input placeholder="Trip Name">
-<input type="date">
-<input type="date">
-<textarea placeholder="Trip Description"></textarea>
+<div class="container">
+  <h1>Create New Trip</h1>
 
-<button onclick="saveTrip()">Save Trip</button>
+  <div class="trip-form">
+    <input type="text" placeholder="Trip Name">
+
+    <div class="date-row">
+      <input type="date">
+      <input type="date">
+    </div>
+
+    <textarea placeholder="Describe your trip..."></textarea>
+
+    <button class="btn" onclick="saveTrip()">Save Trip</button>
+  </div>
+</div>
 
 <script src="../js/trip.js"></script>
+</body>
+</html>

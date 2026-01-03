@@ -2,19 +2,28 @@
 <html>
 <head>
   <title>GlobeTrotter | Login</title>
+  <link rel="stylesheet" href="../css/main.css">
   <link rel="stylesheet" href="../css/auth.css">
 </head>
 <body>
-  <div class="login-box">
-    <h2>GlobeTrotter</h2>
 
-    <input type="email" id="email" placeholder="Email">
-    <input type="password" id="password" placeholder="Password">
+<div class="auth-wrapper">
+  <div class="auth-box">
+    <h1>🌍 GlobeTrotter</h1>
+    <p>Plan your journey beautifully</p>
 
-    <button onclick="login()">Login</button>
-    <p>New user? <a href="#">Signup</a></p>
+    <input type="email" placeholder="Email">
+    <input type="password" placeholder="Password">
+
+    <button class="btn" onclick="login()">Login</button>
+
+    <div class="auth-links">
+      <span>New here? <a href="#">Create account</a></span>
+      <span><a href="#">Forgot password?</a></span>
+    </div>
   </div>
+</div>
 
-  <script src="../js/auth.js"></script>
+<script src="../js/auth.js"></script>
 </body>
 </html>

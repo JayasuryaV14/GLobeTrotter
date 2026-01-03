@@ -1,21 +1,37 @@
-body {
-  background:#0d1b2a;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-  font-family:Arial;
+.auth-wrapper {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.login-box {
-  background:white;
-  padding:30px;
-  width:300px;
-  border-radius:10px;
+.auth-box {
+  background: white;
+  width: 360px;
+  padding: 35px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.15);
 }
 
-input, button {
-  width:100%;
-  padding:10px;
-  margin:10px 0;
+.auth-box h1 {
+  margin-bottom: 5px;
+}
+
+.auth-box p {
+  color: gray;
+  margin-bottom: 20px;
+}
+
+.auth-box input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+
+.auth-links {
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
 }
