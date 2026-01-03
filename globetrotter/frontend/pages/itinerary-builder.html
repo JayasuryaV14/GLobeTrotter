@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Build Itinerary | GlobeTrotter</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/itinerary.css">
+</head>
+<body>
+
+<div class="container">
+  <h1>Build Your Itinerary</h1>
+
+  <div class="builder">
+    <input type="text" placeholder="Add City">
+    <button class="btn">Add Stop</button>
+
+    <div class="stops">
+      <div class="stop">
+        <h3>Paris</h3>
+        <p>Day 1-2</p>
+        <button>Add Activities</button>
+      </div>
+
+      <div class="stop">
+        <h3>Rome</h3>
+        <p>Day 3-4</p>
+        <button>Add Activities</button>
+      </div>
+    </div>
+
+    <button class="btn" onclick="viewItinerary()">View Itinerary</button>
+  </div>
+</div>
+
+<script>
+function viewItinerary(){
+  window.location.href = "itinerary-view.html";
+}
+</script>
+
+</body>
+</html>
