@@ -1,28 +1,202 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard | GlobeTrotter</title>
   <link rel="stylesheet" href="../css/main.css">
   <link rel="stylesheet" href="../css/dashboard.css">
 </head>
 <body>
-
-<div class="container">
-  <h1>Welcome, Explorer 🌍</h1>
-  <p>Your upcoming journeys</p>
-
-  <button class="btn" onclick="createTrip()">➕ Plan New Trip</button>
-
-  <div class="trip-grid">
-    <div class="trip-card">
-      <h3>Europe Adventure</h3>
-      <p>3 Cities · 7 Days</p>
-      <p>₹ 75,000</p>
-      <button onclick="openTrip()">View</button>
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="navbar-content">
+      <a href="dashboard.html" class="navbar-brand">🌍 GlobeTrotter</a>
+      <div class="navbar-menu">
+        <a href="dashboard.html" class="navbar-link active">Dashboard</a>
+        <a href="my-trips.html" class="navbar-link">My Trips</a>
+        <a href="profile.html" class="navbar-link">Profile</a>
+        <a href="#" class="navbar-link" onclick="logout(); return false;">Logout</a>
+      </div>
     </div>
-  </div>
-</div>
+  </nav>
 
-<script src="../js/dashboard.js"></script>
+  <div class="container">
+    <!-- Welcome Section -->
+    <section class="welcome-section">
+      <div class="welcome-content">
+        <h1 class="welcome-title">Welcome, <span id="userName">Explorer</span>! 🌍</h1>
+        <p class="welcome-subtitle">Plan your next adventure and explore the world</p>
+      </div>
+      <div class="quick-actions">
+        <button class="btn btn-primary btn-lg" onclick="createTrip()">
+          <span>➕</span> Plan New Trip
+        </button>
+        <button class="btn btn-secondary btn-lg" onclick="buildItinerary()">
+          <span>🗺️</span> Build Your Itinerary
+        </button>
+      </div>
+    </section>
+
+    <!-- Stats Cards -->
+    <section class="stats-section">
+      <div class="stat-card">
+        <div class="stat-icon">✈️</div>
+        <div class="stat-info">
+          <h3 id="totalTrips">0</h3>
+          <p>Total Trips</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🏙️</div>
+        <div class="stat-info">
+          <h3 id="totalCities">0</h3>
+          <p>Cities Visited</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-info">
+          <h3 id="totalBudget">₹0</h3>
+          <p>Total Budget</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📅</div>
+        <div class="stat-info">
+          <h3 id="upcomingTrips">0</h3>
+          <p>Upcoming Trips</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Adventures -->
+    <section class="section">
+      <div class="section-header">
+        <h2>🌎 Popular Adventures</h2>
+        <p>Discover amazing destinations around the world</p>
+      </div>
+      <div class="adventures-grid">
+        <div class="adventure-card" onclick="viewAdventure('europe')">
+          <div class="adventure-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <span class="adventure-badge">Popular</span>
+          </div>
+          <div class="adventure-content">
+            <h3>Europe Adventure</h3>
+            <p>Paris · London · Rome</p>
+            <div class="adventure-meta">
+              <span>🎯 3 Cities</span>
+              <span>💰 Budget: ₹75,000</span>
+            </div>
+          </div>
+        </div>
+        <div class="adventure-card" onclick="viewAdventure('asia')">
+          <div class="adventure-image" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+            <span class="adventure-badge">Trending</span>
+          </div>
+          <div class="adventure-content">
+            <h3>Asian Discovery</h3>
+            <p>Tokyo · Singapore · Bali</p>
+            <div class="adventure-meta">
+              <span>🎯 3 Cities</span>
+              <span>💰 Budget: ₹85,000</span>
+            </div>
+          </div>
+        </div>
+        <div class="adventure-card" onclick="viewAdventure('americas')">
+          <div class="adventure-image" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+            <span class="adventure-badge">New</span>
+          </div>
+          <div class="adventure-content">
+            <h3>Americas Tour</h3>
+            <p>New York · Los Angeles</p>
+            <div class="adventure-meta">
+              <span>🎯 2 Cities</span>
+              <span>💰 Budget: ₹95,000</span>
+            </div>
+          </div>
+        </div>
+        <div class="adventure-card" onclick="viewAdventure('middle-east')">
+          <div class="adventure-image" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+            <span class="adventure-badge">Luxury</span>
+          </div>
+          <div class="adventure-content">
+            <h3>Middle East Escape</h3>
+            <p>Dubai · Abu Dhabi</p>
+            <div class="adventure-meta">
+              <span>🎯 2 Cities</span>
+              <span>💰 Budget: ₹1,20,000</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- My Recent Trips -->
+    <section class="section">
+      <div class="section-header">
+        <h2>📋 My Recent Trips</h2>
+        <a href="my-trips.html" class="view-all-link">View All →</a>
+      </div>
+      <div class="trips-grid" id="tripsGrid">
+        <!-- Sample Trip Card -->
+        <div class="trip-card">
+          <div class="trip-card-header">
+            <div class="trip-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+              <span class="trip-status">Upcoming</span>
+            </div>
+          </div>
+          <div class="trip-card-body">
+            <h3>Europe Adventure</h3>
+            <p class="trip-dates">📅 Jan 15 - Jan 22, 2024</p>
+            <div class="trip-stats">
+              <span class="trip-stat">🏙️ 3 Cities</span>
+              <span class="trip-stat">💰 ₹75,000</span>
+            </div>
+            <p class="trip-description">Explore the beauty of European cities including Paris, London, and Rome.</p>
+          </div>
+          <div class="trip-card-footer">
+            <button class="btn btn-sm btn-primary" onclick="viewItinerary(1)">📅 Itinerary</button>
+            <button class="btn btn-sm btn-secondary" onclick="viewBudget(1)">💰 Budget</button>
+            <button class="btn btn-sm btn-secondary" onclick="viewTimeline(1)">📊 Timeline</button>
+            <button class="btn btn-sm btn-secondary" onclick="buildTripItinerary(1)">🗺️ Build</button>
+          </div>
+        </div>
+
+        <!-- Empty state if no trips -->
+        <div class="empty-state" id="emptyState" style="display: none;">
+          <div class="empty-icon">✈️</div>
+          <h3>No trips yet</h3>
+          <p>Start planning your first adventure!</p>
+          <button class="btn btn-primary" onclick="createTrip()">Plan Your First Trip</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Access Sections -->
+    <section class="quick-sections">
+      <div class="quick-section-card" onclick="viewAllItineraries()">
+        <div class="quick-section-icon">📅</div>
+        <h3>Trip Itinerary</h3>
+        <p>View and manage your trip schedules</p>
+        <span class="quick-section-link">View All →</span>
+      </div>
+      <div class="quick-section-card" onclick="viewAllBudgets()">
+        <div class="quick-section-icon">💰</div>
+        <h3>Trip Budget Summary</h3>
+        <p>Track your expenses and budget breakdown</p>
+        <span class="quick-section-link">View All →</span>
+      </div>
+      <div class="quick-section-card" onclick="viewAllTimelines()">
+        <div class="quick-section-icon">📊</div>
+        <h3>Trip Timeline</h3>
+        <p>Visualize your journey timeline</p>
+        <span class="quick-section-link">View All →</span>
+      </div>
+    </section>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/dashboard.js"></script>
 </body>
 </html>

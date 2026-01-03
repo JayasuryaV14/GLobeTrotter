@@ -1,30 +1,252 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Trips | GlobeTrotter</title>
   <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/trip.css">
 </head>
 <body>
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="navbar-content">
+      <a href="dashboard.html" class="navbar-brand">🌍 GlobeTrotter</a>
+      <div class="navbar-menu">
+        <a href="dashboard.html" class="navbar-link">Dashboard</a>
+        <a href="my-trips.html" class="navbar-link active">My Trips</a>
+        <a href="profile.html" class="navbar-link">Profile</a>
+        <a href="#" class="navbar-link" onclick="logout(); return false;">Logout</a>
+      </div>
+    </div>
+  </nav>
 
-<div class="container">
-  <h1>My Trips</h1>
+  <div class="container">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div>
+        <h1>My Trips ✈️</h1>
+        <p>Manage and organize all your travel adventures</p>
+      </div>
+      <button class="btn btn-primary btn-lg" onclick="createTrip()">
+        <span>➕</span> Plan New Trip
+      </button>
+    </div>
 
-  <div class="trip-grid">
-    <div class="trip-card">
-      <h3>Europe Adventure</h3>
-      <p>Paris → Rome → Berlin</p>
-      <p>7 Days</p>
+    <!-- Filters and Search -->
+    <div class="filters-section">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="🔍 Search trips by name, destination..." 
+               onkeyup="filterTrips()">
+      </div>
+      <div class="filter-buttons">
+        <button class="filter-btn active" data-filter="all" onclick="filterByStatus('all')">All Trips</button>
+        <button class="filter-btn" data-filter="upcoming" onclick="filterByStatus('upcoming')">Upcoming</button>
+        <button class="filter-btn" data-filter="ongoing" onclick="filterByStatus('ongoing')">Ongoing</button>
+        <button class="filter-btn" data-filter="completed" onclick="filterByStatus('completed')">Completed</button>
+      </div>
+    </div>
 
-      <button onclick="openTrip()">Open Itinerary</button>
+    <!-- Trips Grid -->
+    <div class="trips-grid" id="tripsGrid">
+      <!-- Sample Trip Card 1 -->
+      <div class="trip-card" data-status="upcoming">
+        <div class="trip-card-header">
+          <div class="trip-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <span class="trip-status">Upcoming</span>
+          </div>
+        </div>
+        <div class="trip-card-body">
+          <h3>Europe Adventure</h3>
+          <p class="trip-dates">📅 Jan 15 - Jan 22, 2024</p>
+          <div class="trip-destinations">
+            <span class="destination-tag">🇫🇷 Paris</span>
+            <span class="destination-tag">🇬🇧 London</span>
+            <span class="destination-tag">🇮🇹 Rome</span>
+          </div>
+          <div class="trip-stats">
+            <span class="trip-stat">🏙️ 3 Cities</span>
+            <span class="trip-stat">💰 ₹75,000</span>
+            <span class="trip-stat">📅 7 Days</span>
+          </div>
+          <p class="trip-description">Explore the beauty of European cities including Paris, London, and Rome with amazing architecture and culture.</p>
+        </div>
+        <div class="trip-card-footer">
+          <button class="btn btn-sm btn-primary" onclick="viewItinerary(1)" title="View Itinerary">
+            📅 Itinerary
+          </button>
+          <button class="btn btn-sm btn-secondary" onclick="viewBudget(1)" title="View Budget">
+            💰 Budget
+          </button>
+          <button class="btn btn-sm btn-secondary" onclick="viewTimeline(1)" title="View Timeline">
+            📊 Timeline
+          </button>
+          <button class="btn btn-sm btn-secondary" onclick="editTrip(1)" title="Edit Trip">
+            ✏️ Edit
+          </button>
+          <button class="btn btn-sm btn-danger" onclick="deleteTrip(1)" title="Delete Trip">
+            🗑️ Delete
+          </button>
+        </div>
+      </div>
+
+      <!-- Sample Trip Card 2 -->
+      <div class="trip-card" data-status="completed">
+        <div class="trip-card-header">
+          <div class="trip-image" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+            <span class="trip-status">Completed</span>
+          </div>
+        </div>
+        <div class="trip-card-body">
+          <h3>Asian Discovery</h3>
+          <p class="trip-dates">📅 Dec 1 - Dec 10, 2023</p>
+          <div class="trip-destinations">
+            <span class="destination-tag">🇯🇵 Tokyo</span>
+            <span class="destination-tag">🇸🇬 Singapore</span>
+            <span class="destination-tag">🇮🇩 Bali</span>
+          </div>
+          <div class="trip-stats">
+            <span class="trip-stat">🏙️ 3 Cities</span>
+            <span class="trip-stat">💰 ₹85,000</span>
+            <span class="trip-stat">📅 10 Days</span>
+          </div>
+          <p class="trip-description">Amazing journey through Asia's most vibrant cities with rich culture and delicious food.</p>
+        </div>
+        <div class="trip-card-footer">
+          <button class="btn btn-sm btn-primary" onclick="viewItinerary(2)" title="View Itinerary">
+            📅 Itinerary
+          </button>
+          <button class="btn btn-sm btn-secondary" onclick="viewBudget(2)" title="View Budget">
+            💰 Budget
+          </button>
+          <button class="btn btn-sm btn-secondary" onclick="viewTimeline(2)" title="View Timeline">
+            📊 Timeline
+          </button>
+          <button class="btn btn-sm btn-secondary" onclick="duplicateTrip(2)" title="Duplicate Trip">
+            📋 Duplicate
+          </button>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" id="emptyState" style="display: none;">
+        <div class="empty-icon">✈️</div>
+        <h3>No trips found</h3>
+        <p>Start planning your first adventure!</p>
+        <button class="btn btn-primary" onclick="createTrip()">Plan Your First Trip</button>
+      </div>
     </div>
   </div>
-</div>
 
-<script>
-function openTrip(){
-  window.location.href = "itinerary-builder.html";
-}
-</script>
+  <script src="../js/api.js"></script>
+  <script src="../js/trip.js"></script>
+  <script>
+    // Filter functions
+    function filterByStatus(status) {
+      // Update active button
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.filter === status) {
+          btn.classList.add('active');
+        }
+      });
 
+      // Filter trips
+      const tripCards = document.querySelectorAll('.trip-card[data-status]');
+      tripCards.forEach(card => {
+        if (status === 'all' || card.dataset.status === status) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      checkEmptyState();
+    }
+
+    function filterTrips() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const tripCards = document.querySelectorAll('.trip-card');
+      const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+      
+      let visibleCount = 0;
+      
+      tripCards.forEach(card => {
+        const tripName = card.querySelector('h3').textContent.toLowerCase();
+        const tripDescription = card.querySelector('.trip-description').textContent.toLowerCase();
+        const matchesSearch = tripName.includes(searchTerm) || tripDescription.includes(searchTerm);
+        const matchesFilter = activeFilter === 'all' || card.dataset.status === activeFilter;
+        
+        if (matchesSearch && matchesFilter) {
+          card.style.display = 'flex';
+          visibleCount++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      checkEmptyState();
+    }
+
+    function checkEmptyState() {
+      const visibleTrips = Array.from(document.querySelectorAll('.trip-card')).filter(
+        card => card.style.display !== 'none'
+      );
+      const emptyState = document.getElementById('emptyState');
+      
+      if (visibleTrips.length === 0) {
+        emptyState.style.display = 'block';
+      } else {
+        emptyState.style.display = 'none';
+      }
+    }
+
+    // Navigation functions
+    function createTrip() {
+      window.location.href = 'create-trip.html';
+    }
+
+    function viewItinerary(tripId) {
+      window.location.href = `itinerary-view.html?tripId=${tripId}`;
+    }
+
+    function viewBudget(tripId) {
+      window.location.href = `budget.html?tripId=${tripId}`;
+    }
+
+    function viewTimeline(tripId) {
+      window.location.href = `calendar.html?tripId=${tripId}`;
+    }
+
+    function editTrip(tripId) {
+      window.location.href = `create-trip.html?edit=${tripId}`;
+    }
+
+    function deleteTrip(tripId) {
+      if (confirm('Are you sure you want to delete this trip? This action cannot be undone.')) {
+        // TODO: Call API to delete trip
+        console.log('Deleting trip:', tripId);
+        alert('Trip deleted successfully!');
+        location.reload();
+      }
+    }
+
+    function duplicateTrip(tripId) {
+      if (confirm('Create a copy of this trip?')) {
+        // TODO: Call API to duplicate trip
+        console.log('Duplicating trip:', tripId);
+        alert('Trip duplicated successfully!');
+        location.reload();
+      }
+    }
+
+    function logout() {
+      if (confirm('Are you sure you want to logout?')) {
+        removeToken();
+        window.location.href = 'index.html';
+      }
+    }
+  </script>
 </body>
 </html>

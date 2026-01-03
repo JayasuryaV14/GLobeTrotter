@@ -1,29 +1,206 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Create Trip | GlobeTrotter</title>
   <link rel="stylesheet" href="../css/main.css">
   <link rel="stylesheet" href="../css/trip.css">
 </head>
 <body>
-
-<div class="container">
-  <h1>Create New Trip</h1>
-
-  <div class="trip-form">
-    <input type="text" placeholder="Trip Name">
-
-    <div class="date-row">
-      <input type="date">
-      <input type="date">
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="navbar-content">
+      <a href="dashboard.html" class="navbar-brand">🌍 GlobeTrotter</a>
+      <div class="navbar-menu">
+        <a href="dashboard.html" class="navbar-link">Dashboard</a>
+        <a href="my-trips.html" class="navbar-link">My Trips</a>
+        <a href="profile.html" class="navbar-link">Profile</a>
+        <a href="#" class="navbar-link" onclick="logout(); return false;">Logout</a>
+      </div>
     </div>
+  </nav>
 
-    <textarea placeholder="Describe your trip..."></textarea>
+  <div class="container">
+    <div class="trip-form-container">
+      <div class="trip-form">
+        <div class="form-header">
+          <h1>✨ Create New Trip</h1>
+          <p>Start planning your next adventure</p>
+        </div>
 
-    <button class="btn" onclick="saveTrip()">Save Trip</button>
+        <form id="createTripForm" onsubmit="handleCreateTrip(event)">
+          <!-- Trip Name -->
+          <div class="form-group">
+            <label for="tripName" class="form-label">Trip Name *</label>
+            <input 
+              type="text" 
+              id="tripName" 
+              name="tripName" 
+              placeholder="e.g., Europe Adventure, Asian Discovery"
+              required
+              minlength="3"
+            >
+          </div>
+
+          <!-- Dates -->
+          <div class="form-section">
+            <label class="form-section-label">Travel Dates *</label>
+            <div class="date-row">
+              <div class="date-input-group">
+                <label for="startDate">Start Date</label>
+                <input 
+                  type="date" 
+                  id="startDate" 
+                  name="startDate" 
+                  required
+                >
+              </div>
+              <div class="date-input-group">
+                <label for="endDate">End Date</label>
+                <input 
+                  type="date" 
+                  id="endDate" 
+                  name="endDate" 
+                  required
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="form-group">
+            <label for="description" class="form-label">Trip Description</label>
+            <textarea 
+              id="description" 
+              name="description" 
+              placeholder="Describe your trip, places you want to visit, activities you're interested in..."
+              rows="5"
+            ></textarea>
+          </div>
+
+          <!-- Cover Photo (Optional) -->
+          <div class="form-section">
+            <label class="form-section-label">Cover Photo (Optional)</label>
+            <div class="cover-photo-upload" onclick="document.getElementById('coverPhoto').click()">
+              <span class="upload-icon">📷</span>
+              <div class="upload-text">Click to upload cover photo</div>
+              <div class="upload-hint">PNG, JPG up to 5MB</div>
+              <input type="file" id="coverPhoto" name="coverPhoto" accept="image/*" onchange="handleFileSelect(event)">
+            </div>
+            <div id="selectedFile" style="display: none; margin-top: 12px; padding: 12px; background: var(--bg-light); border-radius: 8px;">
+              <span id="fileName"></span>
+              <button type="button" onclick="clearFile()" style="margin-left: 10px; color: var(--danger-color); cursor: pointer;">✕</button>
+            </div>
+          </div>
+
+          <!-- Error Message -->
+          <div id="errorMessage" class="error-message" style="display: none;"></div>
+
+          <!-- Form Actions -->
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary-outline" onclick="cancelCreate()">
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">
+              <span id="submitBtnText">Create Trip</span>
+              <span id="submitLoader" class="loader" style="display: none;"></span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
-</div>
 
-<script src="../js/trip.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/trip.js"></script>
+  <script>
+    // Set minimum date to today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('startDate').setAttribute('min', today);
+    document.getElementById('endDate').setAttribute('min', today);
+
+    // Validate end date is after start date
+    document.getElementById('startDate').addEventListener('change', function() {
+      const startDate = this.value;
+      document.getElementById('endDate').setAttribute('min', startDate);
+    });
+
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (file) {
+        document.getElementById('fileName').textContent = file.name;
+        document.getElementById('selectedFile').style.display = 'block';
+      }
+    }
+
+    function clearFile() {
+      document.getElementById('coverPhoto').value = '';
+      document.getElementById('selectedFile').style.display = 'none';
+    }
+
+    function cancelCreate() {
+      if (confirm('Are you sure you want to cancel? All changes will be lost.')) {
+        window.location.href = 'dashboard.html';
+      }
+    }
+
+    function logout() {
+      if (confirm('Are you sure you want to logout?')) {
+        removeToken();
+        window.location.href = 'index.html';
+      }
+    }
+
+    async function handleCreateTrip(event) {
+      event.preventDefault();
+      
+      const submitButton = event.target.querySelector('button[type="submit"]');
+      const submitBtnText = document.getElementById('submitBtnText');
+      const submitLoader = document.getElementById('submitLoader');
+      const errorMessage = document.getElementById('errorMessage');
+      
+      // Get form values
+      const tripData = {
+        name: document.getElementById('tripName').value.trim(),
+        start_date: document.getElementById('startDate').value,
+        end_date: document.getElementById('endDate').value,
+        description: document.getElementById('description').value.trim()
+      };
+
+      // Validate dates
+      if (new Date(tripData.end_date) < new Date(tripData.start_date)) {
+        errorMessage.textContent = 'End date must be after start date';
+        errorMessage.style.display = 'block';
+        return;
+      }
+
+      // Hide error, show loading
+      errorMessage.style.display = 'none';
+      submitButton.disabled = true;
+      submitBtnText.style.display = 'none';
+      submitLoader.style.display = 'inline-block';
+
+      try {
+        // TODO: Replace with actual API call
+        // const response = await apiRequest('/trips/create', {
+        //   method: 'POST',
+        //   body: JSON.stringify(tripData)
+        // });
+
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        alert('Trip created successfully!');
+        window.location.href = 'itinerary-builder.html';
+      } catch (error) {
+        errorMessage.textContent = error.message || 'Failed to create trip. Please try again.';
+        errorMessage.style.display = 'block';
+        submitButton.disabled = false;
+        submitBtnText.style.display = 'inline';
+        submitLoader.style.display = 'none';
+      }
+    }
+  </script>
 </body>
 </html>

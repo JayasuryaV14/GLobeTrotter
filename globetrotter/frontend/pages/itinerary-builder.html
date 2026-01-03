@@ -1,42 +1,372 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Build Itinerary | GlobeTrotter</title>
   <link rel="stylesheet" href="../css/main.css">
-  <link rel="stylesheet" href="../css/itinerary.css">
+  <link rel="stylesheet" href="../css/trip.css">
 </head>
 <body>
-
-<div class="container">
-  <h1>Build Your Itinerary</h1>
-
-  <div class="builder">
-    <input type="text" placeholder="Add City">
-    <button class="btn">Add Stop</button>
-
-    <div class="stops">
-      <div class="stop">
-        <h3>Paris</h3>
-        <p>Day 1-2</p>
-        <button>Add Activities</button>
-      </div>
-
-      <div class="stop">
-        <h3>Rome</h3>
-        <p>Day 3-4</p>
-        <button>Add Activities</button>
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="navbar-content">
+      <a href="dashboard.html" class="navbar-brand">🌍 GlobeTrotter</a>
+      <div class="navbar-menu">
+        <a href="dashboard.html" class="navbar-link">Dashboard</a>
+        <a href="my-trips.html" class="navbar-link">My Trips</a>
+        <a href="profile.html" class="navbar-link">Profile</a>
+        <a href="#" class="navbar-link" onclick="logout(); return false;">Logout</a>
       </div>
     </div>
+  </nav>
 
-    <button class="btn" onclick="viewItinerary()">View Itinerary</button>
+<div class="container">
+    <div class="builder-container">
+      <!-- Builder Header -->
+      <div class="builder-header">
+        <h1>🗺️ Build Your Itinerary</h1>
+        <p>Add cities, dates, and activities to create your perfect travel plan</p>
+      </div>
+
+      <!-- Trip Selector -->
+      <div class="trip-selector">
+        <label class="selector-label">Select Trip</label>
+        <select id="tripSelect" class="form-select" onchange="loadTripItinerary()">
+          <option value="">-- Select a trip --</option>
+          <option value="1">Europe Adventure</option>
+          <option value="2">Asian Discovery</option>
+        </select>
+      </div>
+
+      <!-- City Search Section -->
+      <div class="city-search-section">
+        <h2 style="margin-bottom: 20px; color: var(--text-dark);">🔍 Search & Add Cities</h2>
+        <div class="search-input-group">
+          <input 
+            type="text" 
+            id="citySearchInput" 
+            placeholder="Search for a city (e.g., Paris, Tokyo, New York)"
+            onkeyup="searchCities()"
+          >
+          <button type="button" class="btn btn-primary" onclick="searchCities()">
+            Search
+          </button>
+        </div>
+        <div id="cityResults" class="city-results"></div>
+      </div>
+
+      <!-- Stops Section -->
+      <div class="stops-section">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+          <h2 style="margin: 0; color: var(--text-dark);">📍 Trip Stops</h2>
+          <button type="button" class="btn btn-secondary" onclick="clearAllStops()">
+            Clear All
+          </button>
+        </div>
+        <div id="stopsList" class="stops-list">
+          <!-- Stops will be added here dynamically -->
+          <div class="empty-state" id="noStopsMessage" style="text-align: center; padding: 60px 20px;">
+            <div style="font-size: 4rem; margin-bottom: 20px;">🌍</div>
+            <h3>No stops added yet</h3>
+            <p>Search for cities above and click to add them to your itinerary</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Builder Actions -->
+      <div class="builder-actions">
+        <button type="button" class="btn btn-secondary-outline" onclick="cancelBuilder()">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-secondary" onclick="previewItinerary()">
+          👁️ Preview Itinerary
+        </button>
+        <button type="button" class="btn btn-primary" onclick="saveItinerary()">
+          💾 Save Itinerary
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/itinerary.js"></script>
+  <script>
+    let stops = [];
+    let availableCities = [
+      { id: 1, name: 'Paris', country: 'France', countryCode: 'FR', costIndex: 1.8 },
+      { id: 2, name: 'London', country: 'United Kingdom', countryCode: 'GB', costIndex: 1.9 },
+      { id: 3, name: 'Rome', country: 'Italy', countryCode: 'IT', costIndex: 1.6 },
+      { id: 4, name: 'Tokyo', country: 'Japan', countryCode: 'JP', costIndex: 2.1 },
+      { id: 5, name: 'New York', country: 'United States', countryCode: 'US', costIndex: 2.3 },
+      { id: 6, name: 'Barcelona', country: 'Spain', countryCode: 'ES', costIndex: 1.5 },
+      { id: 7, name: 'Dubai', country: 'UAE', countryCode: 'AE', costIndex: 1.7 },
+      { id: 8, name: 'Singapore', country: 'Singapore', countryCode: 'SG', costIndex: 1.8 },
+      { id: 9, name: 'Bali', country: 'Indonesia', countryCode: 'ID', costIndex: 1.2 },
+      { id: 10, name: 'Sydney', country: 'Australia', countryCode: 'AU', costIndex: 2.0 }
+    ];
+
+    let availableActivities = [
+      { id: 1, name: 'Eiffel Tower Visit', category: 'Sightseeing', duration: 2.5, cost: 25, cityId: 1 },
+      { id: 2, name: 'Louvre Museum', category: 'Museum', duration: 4, cost: 17, cityId: 1 },
+      { id: 3, name: 'Big Ben & Parliament', category: 'Sightseeing', duration: 1.5, cost: 0, cityId: 2 },
+      { id: 4, name: 'Tower of London', category: 'History', duration: 3, cost: 29, cityId: 2 },
+      { id: 5, name: 'Colosseum Tour', category: 'History', duration: 2.5, cost: 16, cityId: 3 },
+      { id: 6, name: 'Sagrada Familia', category: 'Sightseeing', duration: 2, cost: 26, cityId: 6 }
+    ];
+
+    function searchCities() {
+      const searchTerm = document.getElementById('citySearchInput').value.toLowerCase().trim();
+      const resultsContainer = document.getElementById('cityResults');
+      
+      if (!searchTerm) {
+        resultsContainer.innerHTML = '';
+        return;
+      }
+
+      const filtered = availableCities.filter(city => 
+        city.name.toLowerCase().includes(searchTerm) ||
+        city.country.toLowerCase().includes(searchTerm)
+      );
+
+      if (filtered.length === 0) {
+        resultsContainer.innerHTML = '<p style="text-align: center; color: var(--text-gray); padding: 20px;">No cities found</p>';
+        return;
+      }
+
+      resultsContainer.innerHTML = filtered.map(city => `
+        <div class="city-result-card" onclick="addStop(${city.id})">
+          <h4>${city.name}</h4>
+          <p>📍 ${city.country}</p>
+          <p style="font-size: 0.85rem; color: var(--text-light);">Cost Index: ${city.costIndex}</p>
+        </div>
+      `).join('');
+    }
+
+    function addStop(cityId) {
+      const city = availableCities.find(c => c.id === cityId);
+      if (!city) return;
+
+      // Check if already added
+      if (stops.find(s => s.cityId === cityId)) {
+        alert('This city is already in your itinerary!');
+        return;
+      }
+
+      const stop = {
+        id: Date.now(),
+        cityId: cityId,
+        cityName: city.name,
+        country: city.country,
+        arrivalDate: '',
+        departureDate: '',
+        activities: []
+      };
+
+      stops.push(stop);
+      renderStops();
+      document.getElementById('citySearchInput').value = '';
+      document.getElementById('cityResults').innerHTML = '';
+    }
+
+    function removeStop(stopId) {
+      stops = stops.filter(s => s.id !== stopId);
+      renderStops();
+    }
+
+    function renderStops() {
+      const stopsList = document.getElementById('stopsList');
+      const noStopsMessage = document.getElementById('noStopsMessage');
+
+      if (stops.length === 0) {
+        stopsList.innerHTML = '<div class="empty-state" id="noStopsMessage" style="text-align: center; padding: 60px 20px;"><div style="font-size: 4rem; margin-bottom: 20px;">🌍</div><h3>No stops added yet</h3><p>Search for cities above and click to add them to your itinerary</p></div>';
+        return;
+      }
+
+      noStopsMessage?.remove();
+      stopsList.innerHTML = stops.map((stop, index) => {
+        const city = availableCities.find(c => c.id === stop.cityId);
+        const cityActivities = availableActivities.filter(a => a.cityId === stop.cityId);
+
+        return `
+          <div class="stop-card">
+            <div class="stop-header">
+              <div class="stop-info">
+                <h3>${stop.cityName}, ${stop.country}</h3>
+                <div class="stop-dates">
+                  <div class="stop-date-group">
+                    <label>Arrival Date</label>
+                    <input type="date" value="${stop.arrivalDate}" onchange="updateStopDate(${stop.id}, 'arrival', this.value)">
+                  </div>
+                  <div class="stop-date-group">
+                    <label>Departure Date</label>
+                    <input type="date" value="${stop.departureDate}" onchange="updateStopDate(${stop.id}, 'departure', this.value)">
+                  </div>
+                </div>
+              </div>
+              <div class="stop-actions">
+                <button type="button" class="btn btn-sm btn-danger" onclick="removeStop(${stop.id})">
+                  Remove
+                </button>
+              </div>
+            </div>
+            <div class="activities-section">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <label style="font-weight: 600; color: var(--text-dark);">Activities</label>
+                <select id="activitySelect${stop.id}" class="form-select" style="max-width: 300px; padding: 8px 12px;">
+                  <option value="">-- Add Activity --</option>
+                  ${cityActivities.map(act => `<option value="${act.id}">${act.name} (${act.duration}h, ₹${act.cost})</option>`).join('')}
+                </select>
+                <button type="button" class="btn btn-sm btn-primary" onclick="addActivity(${stop.id})" style="margin-left: 10px;">
+                  Add
+                </button>
+              </div>
+              <div id="activities${stop.id}" class="activities-list">
+                ${stop.activities.map(actId => {
+                  const act = availableActivities.find(a => a.id === actId);
+                  return act ? `
+                    <div class="activity-item">
+                      <span>${act.name} (${act.duration}h, ₹${act.cost})</span>
+                      <button type="button" class="remove-btn" onclick="removeActivity(${stop.id}, ${actId})">Remove</button>
+                    </div>
+                  ` : '';
+                }).join('')}
+              </div>
   </div>
 </div>
+        `;
+      }).join('');
+    }
 
-<script>
-function viewItinerary(){
-  window.location.href = "itinerary-view.html";
-}
-</script>
+    function updateStopDate(stopId, type, value) {
+      const stop = stops.find(s => s.id === stopId);
+      if (stop) {
+        if (type === 'arrival') {
+          stop.arrivalDate = value;
+          if (stop.departureDate && value > stop.departureDate) {
+            stop.departureDate = value;
+          }
+        } else {
+          stop.departureDate = value;
+          if (stop.arrivalDate && value < stop.arrivalDate) {
+            stop.arrivalDate = value;
+          }
+        }
+        renderStops();
+      }
+    }
 
+    function addActivity(stopId) {
+      const select = document.getElementById(`activitySelect${stopId}`);
+      const activityId = parseInt(select.value);
+      if (!activityId) return;
+
+      const stop = stops.find(s => s.id === stopId);
+      if (stop && !stop.activities.includes(activityId)) {
+        stop.activities.push(activityId);
+        renderStops();
+      }
+    }
+
+    function removeActivity(stopId, activityId) {
+      const stop = stops.find(s => s.id === stopId);
+      if (stop) {
+        stop.activities = stop.activities.filter(a => a !== activityId);
+        renderStops();
+      }
+    }
+
+    function clearAllStops() {
+      if (confirm('Are you sure you want to remove all stops? This cannot be undone.')) {
+        stops = [];
+        renderStops();
+      }
+    }
+
+    function loadTripItinerary() {
+      const tripId = document.getElementById('tripSelect').value;
+      if (!tripId) {
+        stops = [];
+        renderStops();
+        return;
+      }
+
+      // TODO: Load trip itinerary from API
+      // For now, show sample data
+      if (tripId === '1') {
+        stops = [
+          {
+            id: 1,
+            cityId: 1,
+            cityName: 'Paris',
+            country: 'France',
+            arrivalDate: '2024-01-15',
+            departureDate: '2024-01-18',
+            activities: [1, 2]
+          },
+          {
+            id: 2,
+            cityId: 2,
+            cityName: 'London',
+            country: 'United Kingdom',
+            arrivalDate: '2024-01-18',
+            departureDate: '2024-01-20',
+            activities: [3, 4]
+          }
+        ];
+        renderStops();
+      }
+    }
+
+    function previewItinerary() {
+      if (stops.length === 0) {
+        alert('Please add at least one stop to preview');
+        return;
+      }
+      // TODO: Open itinerary view in new tab or modal
+      window.location.href = 'itinerary-view.html';
+    }
+
+    function saveItinerary() {
+      if (stops.length === 0) {
+        alert('Please add at least one stop before saving');
+        return;
+      }
+
+      // Validate dates
+      for (const stop of stops) {
+        if (!stop.arrivalDate || !stop.departureDate) {
+          alert(`Please set dates for ${stop.cityName}`);
+          return;
+        }
+      }
+
+      // TODO: Save to API
+      alert('Itinerary saved successfully!');
+      console.log('Saving stops:', stops);
+    }
+
+    function cancelBuilder() {
+      if (confirm('Are you sure you want to cancel? All changes will be lost.')) {
+        window.location.href = 'dashboard.html';
+      }
+    }
+
+    function logout() {
+      if (confirm('Are you sure you want to logout?')) {
+        removeToken();
+        window.location.href = 'index.html';
+      }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!isAuthenticated()) {
+        window.location.href = 'index.html';
+        return;
+      }
+      renderStops();
+    });
+  </script>
 </body>
 </html>

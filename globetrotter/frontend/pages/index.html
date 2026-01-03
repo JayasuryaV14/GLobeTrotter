@@ -1,29 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>GlobeTrotter | Login</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | GlobeTrotter</title>
   <link rel="stylesheet" href="../css/main.css">
   <link rel="stylesheet" href="../css/auth.css">
 </head>
 <body>
 
 <div class="auth-wrapper">
-  <div class="auth-box">
-    <h1>🌍 GlobeTrotter</h1>
-    <p>Plan your journey beautifully</p>
+  <div class="auth-container">
+    <div class="auth-left">
+      <div class="auth-branding">
+        <h1>🌍 GlobeTrotter</h1>
+        <p class="tagline">Plan your journey beautifully</p>
+        <p class="description">Welcome back! Sign in to continue planning your adventures around the world.</p>
+      </div>
+    </div>
 
-    <input type="email" placeholder="Email">
-    <input type="password" placeholder="Password">
+    <div class="auth-right">
+      <div class="auth-box">
+        <h2>Welcome Back</h2>
+        <p class="subtitle">Sign in to your account</p>
 
-    <button class="btn" onclick="login()">Login</button>
+        <form id="loginForm" onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" placeholder="john@example.com" required>
+          </div>
 
-    <div class="auth-links">
-      <span>New here? <a href="#">Create account</a></span>
-      <span><a href="#">Forgot password?</a></span>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+          </div>
+
+          <div id="errorMessage" class="error-message" style="display: none;"></div>
+
+          <button type="submit" class="btn btn-primary btn-block">
+            <span id="loginBtnText">Sign In</span>
+            <span id="loginLoader" class="loader" style="display: none;"></span>
+          </button>
+        </form>
+
+        <div class="auth-divider">
+          <span>or</span>
+        </div>
+
+        <div class="auth-links">
+          <p>Don't have an account? <a href="signup.html">Create one</a></p>
+          <p><a href="#" onclick="alert('Forgot password feature coming soon!'); return false;">Forgot password?</a></p>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
+<script src="../js/api.js"></script>
 <script src="../js/auth.js"></script>
 </body>
 </html>
