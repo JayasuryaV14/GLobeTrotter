@@ -8,6 +8,8 @@ app.use(bodyParser.json());
 
 require("./config/db");
 
+app.use("/api/trips", require("./routes/tripRoutes"));
+
 app.get("/", (req, res) => {
   res.send("GlobeTrotter API running");
 });
