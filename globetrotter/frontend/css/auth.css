@@ -1,0 +1,21 @@
+body {
+  background:#0d1b2a;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  font-family:Arial;
+}
+
+.login-box {
+  background:white;
+  padding:30px;
+  width:300px;
+  border-radius:10px;
+}
+
+input, button {
+  width:100%;
+  padding:10px;
+  margin:10px 0;
+}
