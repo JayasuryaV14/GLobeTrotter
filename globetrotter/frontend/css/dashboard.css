@@ -1,0 +1,13 @@
+body {
+    font-family: Arial;
+    background:#f2f6ff;
+    padding:30px;
+}
+
+.trip-card {
+    background:white;
+    width:250px;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 5px 10px rgba(0,0,0,0.1);
+}

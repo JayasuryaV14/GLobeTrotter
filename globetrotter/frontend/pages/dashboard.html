@@ -1,6 +1,24 @@
-<h2>Welcome to GlobeTrotter 🌍</h2>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GlobeTrotter | Dashboard</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
 
-<button onclick="newTrip()">Plan New Trip</button>
-<div id="tripList"></div>
+    <h1>🌍 GlobeTrotter</h1>
+    <h3>Welcome, Explorer!</h3>
+
+    <button onclick="newTrip()">➕ Plan New Trip</button>
+
+    <div class="trips">
+        <div class="trip-card">
+            <h4>My Europe Trip</h4>
+            <p>3 Cities | 7 Days</p>
+            <button onclick="openTrip()">View</button>
+        </div>
+    </div>
 
 <script src="../js/dashboard.js"></script>
+</body>
+</html>
